@@ -19,7 +19,13 @@ variable "environment" {
 variable "name" {
   type        = string
   default     = null
-  description = "Base resource name, e.g. \"sre-reports\" - optional, used only for the Name/origin-name tags, and always specific to this one call (never taken from context). Never fed into name_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name_prefix/bucket_prefix/identifier_prefix argument."
+  description = "Base resource name, e.g. \"sre-reports\" - optional, used only for the Name/origin-name tags, and always specific to this one call (never taken from context). Never fed into name_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name_prefix/bucket_prefix/identifier_prefix argument. Mutually exclusive in practice with `names` - use whichever fits: `name` for one resource per call (chained via context), `names` to tag many resources from a single call."
+}
+
+variable "names" {
+  type        = map(string)
+  default     = {}
+  description = "Map of arbitrary key -> base resource name, to tag many resources from a single module call instead of one call per resource. Look up module.<this>.tags_by_name[key] at each resource. All entries share the same namespace/environment/owner/tag_prefix/etc. from this one call - there is no per-entry override for those."
 }
 
 variable "attributes" {

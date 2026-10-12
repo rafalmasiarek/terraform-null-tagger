@@ -71,6 +71,21 @@ locals {
   # the resource's display name - it must never carry tag_prefix.
   tags = var.name != null ? merge(local.prefixed_tags, { Name = local.computed_name }) : local.prefixed_tags
 
+  # Batch mode: one module call, many resource names. prefixed_tags is
+  # already name-independent (namespace/environment/owner/origin/... are
+  # the same for every entry) - only Name and origin-name vary per key.
+  tags_by_name = {
+    for key, name in var.names : key => merge(
+      local.prefixed_tags,
+      { "${local.tag_prefix}origin-name" = name },
+      { Name = "${local.name_prefix}${name}" },
+    )
+  }
+
+  computed_name_by_name = {
+    for key, name in var.names : key => "${local.name_prefix}${name}"
+  }
+
   # Bundle of every shared (non-per-call) setting, for the NEXT call's
   # `context` input - deliberately excludes name/attributes/created_at.
   context = {
