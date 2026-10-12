@@ -6,10 +6,13 @@
   />
 </p>
 
-# terraform-null-tagger
+# Terraform Tagger
 
-Generates a standardized `name_prefix` and tag map. No real resources, no
-dependency on `cloudposse/label/null`.
+**Standardized naming and tagging for Terraform resources.**
+
+Computes a `name_prefix` and tag map from namespace, environment, owner,
+module origin, and predefined per-service tag sets. Pure logic, no
+resources of its own.
 
 ## Design
 
