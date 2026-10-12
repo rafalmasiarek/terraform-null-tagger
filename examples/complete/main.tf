@@ -19,6 +19,12 @@ module "tagger_sre_reports" {
   source  = "../../"
   context = module.tagger.context
   name    = "sre-reports"
+
+  database = {
+    engine         = "postgres"
+    engine_version = "15.4"
+    multi_az       = true
+  }
 }
 
 module "tagger_other_thing" {

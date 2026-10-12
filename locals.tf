@@ -62,8 +62,30 @@ locals {
     local.origin_version != null ? { version = local.origin_version } : {},
   )
 
+  # Predefined, provider-agnostic service tag sets (database, compute,
+  # cache, load_balancer, object_storage, block_storage, kubernetes) -
+  # each optional, flattened into "<service>-<field>" keys (underscores
+  # become hyphens to match every other tag key's style), skipping any
+  # service left null and any field left null within a given service.
+  service_profiles = {
+    db       = var.database
+    compute  = var.compute
+    cache    = var.cache
+    lb       = var.load_balancer
+    objstore = var.object_storage
+    volume   = var.block_storage
+    k8s      = var.kubernetes
+  }
+
+  service_tags = merge([
+    for service, profile in local.service_profiles : profile == null ? {} : {
+      for field, value in profile : "${service}-${replace(field, "_", "-")}" => tostring(value)
+      if value != null
+    }
+  ]...)
+
   prefixed_tags = {
-    for k, v in merge(local.standard_tags, local.origin_tags, var.extra_tags) :
+    for k, v in merge(local.standard_tags, local.origin_tags, local.service_tags, var.extra_tags) :
     "${local.tag_prefix}${k}" => v
   }
 

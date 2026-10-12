@@ -95,3 +95,78 @@ variable "origin_version" {
   default     = null
   description = "Version/ref of the calling module. Passive input, usually shared via context like origin_source."
 }
+
+# Predefined, provider-agnostic service tag sets. Each is optional (default
+# null - no tags generated), filled in by hand or by a provider's
+# auto-discovery (e.g. terraform-provider-tagger). Never pulled from
+# context - always specific to this one resource.
+
+variable "database" {
+  type = object({
+    engine         = optional(string) # postgres, mysql, mariadb, ...
+    engine_version = optional(string)
+    size           = optional(string) # db.t3.micro, Standard_B2s, ... - name varies per provider
+    multi_az       = optional(bool)
+    storage_gb     = optional(number)
+  })
+  default     = null
+  description = "RDS / Azure Database / DO Managed Databases / etc."
+}
+
+variable "compute" {
+  type = object({
+    instance_id   = optional(string)
+    instance_type = optional(string) # t3.micro, Standard_B2s, cx11, ...
+    os            = optional(string) # ubuntu, amazon-linux, debian, ...
+    os_version    = optional(string)
+  })
+  default     = null
+  description = "EC2 / Azure VM / DO Droplet / Hetzner Server / etc."
+}
+
+variable "cache" {
+  type = object({
+    engine         = optional(string) # redis, memcached
+    engine_version = optional(string)
+    size           = optional(string)
+  })
+  default     = null
+  description = "ElastiCache / Azure Cache for Redis / DO Managed Redis / etc."
+}
+
+variable "load_balancer" {
+  type = object({
+    type      = optional(string) # application, network, classic
+    algorithm = optional(string) # round_robin, least_connections, ...
+  })
+  default     = null
+  description = "ALB/NLB / Azure Load Balancer / DO LB / Hetzner Load Balancer / etc."
+}
+
+variable "object_storage" {
+  type = object({
+    storage_class = optional(string) # standard, infrequent_access, glacier, ...
+    versioning    = optional(bool)
+  })
+  default     = null
+  description = "S3 / Azure Blob / DO Spaces / Hetzner Object Storage / etc."
+}
+
+variable "block_storage" {
+  type = object({
+    size_gb = optional(number)
+    type    = optional(string) # ssd, hdd, gp3, io2, ...
+    iops    = optional(number)
+  })
+  default     = null
+  description = "EBS / Azure Disk / DO Volumes / Hetzner Volumes / etc."
+}
+
+variable "kubernetes" {
+  type = object({
+    version    = optional(string)
+    node_count = optional(number)
+  })
+  default     = null
+  description = "EKS / AKS / DOKS / etc. Null on providers without a managed offering (e.g. Hetzner, where k3s is typically self-managed on compute instances instead)."
+}
