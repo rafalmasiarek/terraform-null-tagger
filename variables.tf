@@ -33,6 +33,12 @@ variable "delimiter" {
   default = null
 }
 
+variable "regex_replace_chars" {
+  type        = string
+  default     = null
+  description = "Terraform regex matching characters to strip from namespace/environment/attributes/name before use. Falls back to context, then to \"/[^a-zA-Z0-9-]/\" (letters, digits, hyphen only)."
+}
+
 variable "name_order" {
   type        = list(string)
   default     = null
@@ -43,6 +49,12 @@ variable "tag_prefix" {
   type        = string
   default     = null
   description = "Namespace prefix for tag keys, e.g. \"acme:\". Falls back to context, then to \"tagger:\". Never applied to the \"Name\" tag - AWS reads that key verbatim for the console display name."
+}
+
+variable "tag_key_delimiter" {
+  type        = string
+  default     = null
+  description = "Separator used inside composite tag key names (e.g. \"cost<sep>center\", \"db<sep>engine\"). Falls back to context, then to \"-\". Set to \":\" to build a tag tree, e.g. \"tagger:cost:center\"."
 }
 
 variable "owner" {
@@ -86,8 +98,15 @@ variable "created_at" {
 }
 
 variable "extra_tags" {
-  type    = map(string)
-  default = {}
+  type        = any
+  default     = {}
+  description = <<-EOT
+    Custom tags, keyed however you like. A scalar value (string, bool,
+    number) is used as-is: { security = true } -> security = "true".
+    A map value is flattened one level deep, joined with
+    tag_key_delimiter: { contact = { email = "a@b.c", phone = "123" } }
+    -> contact<delim>email = "a@b.c", contact<delim>phone = "123".
+  EOT
 }
 
 variable "origin_source" {
@@ -113,7 +132,7 @@ variable "database" {
     engine_version = optional(string)
     size           = optional(string) # db.t3.micro, Standard_B2s, ... - name varies per provider
     multi_az       = optional(bool)
-    storage_gb     = optional(number)
+    storage_gb     = optional(number) # manual only, never auto-discovered - RDS storage autoscaling changes it live
   })
   default     = null
   description = "RDS / Azure Database / DO Managed Databases / etc."
@@ -185,4 +204,16 @@ variable "serverless" {
   })
   default     = null
   description = "Lambda / Azure Functions / Cloudflare Workers / etc."
+}
+
+variable "autoscaling_group" {
+  type = object({
+    min_size                = optional(number)
+    max_size                = optional(number)
+    desired_capacity        = optional(number) # manual only, never auto-discovered - live value, causes plan diffs
+    launch_template_id      = optional(string)
+    launch_template_version = optional(string)
+  })
+  default     = null
+  description = "ASG / Azure VMSS / DO Autoscale Pool / etc."
 }
