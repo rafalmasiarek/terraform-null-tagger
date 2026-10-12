@@ -35,10 +35,10 @@ locals {
     var.name != null ? { origin-name = var.name } : {},
   )
 
-  origin_tags = var.detect_origin ? {
-    origin  = try(data.external.module_origin[0].result.source, "unknown")
-    version = try(data.external.module_origin[0].result.version, "unknown")
-  } : {}
+  origin_tags = merge(
+    var.origin_source != null ? { origin = var.origin_source } : {},
+    var.origin_version != null ? { version = var.origin_version } : {},
+  )
 
   prefixed_tags = {
     for k, v in merge(local.standard_tags, local.origin_tags, var.extra_tags) :

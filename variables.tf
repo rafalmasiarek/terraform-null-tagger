@@ -33,8 +33,8 @@ variable "name_order" {
 
 variable "tag_prefix" {
   type        = string
-  default     = ""
-  description = "Namespace prefix for tag keys, e.g. \"acme:\". Never applied to the \"Name\" tag - AWS reads that key verbatim for the console display name."
+  default     = "tagger:"
+  description = "Namespace prefix for tag keys, e.g. \"acme:\". Default is \"tagger:\" - override per caller (e.g. with your own org namespace). Never applied to the \"Name\" tag - AWS reads that key verbatim for the console display name."
 }
 
 variable "owner" {
@@ -75,8 +75,14 @@ variable "extra_tags" {
   default = {}
 }
 
-variable "detect_origin" {
-  type        = bool
-  default     = false
-  description = "Opt-in. Attempts to read the calling module's own source/version from .terraform/modules/modules.json via a local script. Fails soft - a detection failure never breaks plan/apply, it only yields \"unknown\" values."
+variable "origin_source" {
+  type        = string
+  default     = null
+  description = "Where the calling module came from, e.g. \"github.com/rafalmasiarek/terraform-aws-vpc\". Passive input - this module never detects it itself; pass it from data.tagger_origin.self.source (terraform-provider-tagger) or hardcode it."
+}
+
+variable "origin_version" {
+  type        = string
+  default     = null
+  description = "Version/ref of the calling module. Passive input - pass it from data.tagger_origin.self.version (terraform-provider-tagger) or hardcode it."
 }
