@@ -1,45 +1,54 @@
+variable "context" {
+  type        = any
+  default     = null
+  description = "Bundle of shared settings from a previous call's `context` output. Lets you set namespace/environment/owner/tag_prefix/origin_source/origin_version once in a \"base\" call, then reuse them across many per-resource calls that only need to pass `context` + `name`. Any variable set explicitly below always overrides the matching value in `context`."
+}
+
 variable "namespace" {
   type        = string
-  description = "Short organization/project identifier, e.g. \"acme\"."
+  default     = null
+  description = "Short organization/project identifier, e.g. \"acme\". Required, either here or via context."
 }
 
 variable "environment" {
   type        = string
-  description = "e.g. dev, staging, prod"
+  default     = null
+  description = "e.g. dev, staging, prod. Required, either here or via context."
 }
 
 variable "name" {
   type        = string
   default     = null
-  description = "Base resource name, e.g. \"sre-reports\" - optional, used only for the Name/origin-name tags. Never fed into name_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name_prefix/bucket_prefix/identifier_prefix argument."
+  description = "Base resource name, e.g. \"sre-reports\" - optional, used only for the Name/origin-name tags, and always specific to this one call (never taken from context). Never fed into name_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name_prefix/bucket_prefix/identifier_prefix argument."
 }
 
 variable "attributes" {
   type        = list(string)
-  default     = []
+  default     = null
   description = "Extra name_prefix segments, in order (e.g. a region abbreviation like \"euc1\")."
 }
 
 variable "delimiter" {
   type    = string
-  default = "-"
+  default = null
 }
 
 variable "name_order" {
   type        = list(string)
-  default     = ["namespace", "environment", "attributes"]
+  default     = null
   description = "Order of name_prefix segments. Valid keys: namespace, environment, attributes."
 }
 
 variable "tag_prefix" {
   type        = string
-  default     = "tagger:"
-  description = "Namespace prefix for tag keys, e.g. \"acme:\". Default is \"tagger:\" - override per caller (e.g. with your own org namespace). Never applied to the \"Name\" tag - AWS reads that key verbatim for the console display name."
+  default     = null
+  description = "Namespace prefix for tag keys, e.g. \"acme:\". Falls back to context, then to \"tagger:\". Never applied to the \"Name\" tag - AWS reads that key verbatim for the console display name."
 }
 
 variable "owner" {
   type        = string
-  description = "Team or person accountable for the resource."
+  default     = null
+  description = "Team or person accountable for the resource. Required, either here or via context."
 }
 
 variable "owner_contact" {
@@ -50,8 +59,8 @@ variable "owner_contact" {
 
 variable "managed_by" {
   type        = bool
-  default     = true
-  description = "Whether to add managed-by=terraform."
+  default     = null
+  description = "Whether to add managed-by=terraform. Falls back to context, then to true."
 }
 
 variable "cost_center" {
@@ -67,7 +76,7 @@ variable "application" {
 variable "created_at" {
   type        = string
   default     = null
-  description = "RFC3339 timestamp, typically time_static.created.rfc3339 in the caller - set once, never changes, to avoid perpetual plan diffs."
+  description = "RFC3339 timestamp, typically time_static.created.rfc3339 in the caller - set once, never changes, to avoid perpetual plan diffs. Always specific to this one call, never taken from context."
 }
 
 variable "extra_tags" {
@@ -78,11 +87,11 @@ variable "extra_tags" {
 variable "origin_source" {
   type        = string
   default     = null
-  description = "Where the calling module came from, e.g. \"github.com/rafalmasiarek/terraform-aws-vpc\". Passive input - this module never detects it itself; pass it from data.tagger_origin.self.source (terraform-provider-tagger) or hardcode it."
+  description = "Where the calling module came from, e.g. \"github.com/rafalmasiarek/terraform-aws-vpc\". Passive input - this module never detects it itself; pass it from data.tagger_origin.self.source (terraform-provider-tagger) or hardcode it, usually via context so every resource in a stack shares the same value."
 }
 
 variable "origin_version" {
   type        = string
   default     = null
-  description = "Version/ref of the calling module. Passive input - pass it from data.tagger_origin.self.version (terraform-provider-tagger) or hardcode it."
+  description = "Version/ref of the calling module. Passive input, usually shared via context like origin_source."
 }
