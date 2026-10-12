@@ -15,7 +15,7 @@ locals {
   owner             = coalesce(var.owner, try(var.context.owner, null))
   delimiter         = coalesce(var.delimiter, try(var.context.delimiter, null), "-")
   tag_prefix        = coalesce(var.tag_prefix, try(var.context.tag_prefix, null), "tagger:")
-  tag_key_delimiter = coalesce(var.tag_key_delimiter, try(var.context.tag_key_delimiter, null), "-")
+  tag_key_delimiter = coalesce(var.tag_key_delimiter, try(var.context.tag_key_delimiter, null), ":")
   name_order        = var.name_order != null ? var.name_order : try(var.context.name_order, ["namespace", "environment", "attributes"])
   managed_by        = var.managed_by != null ? var.managed_by : try(var.context.managed_by, true)
   managed_by_key    = coalesce(var.managed_by_key, try(var.context.managed_by_key, null), "managed-by")
@@ -92,10 +92,13 @@ locals {
     asg        = var.autoscaling_group
   }
 
+  # tag_key_delimiter groups by category/service only
+  # (asg:launch-template-version) - a multi-word field name stays one
+  # hyphenated slug, never exploded into its own tree levels.
   service_tags = merge([
     for service, profile in local.service_profiles : profile == null ? {} : {
-      for field, value in profile : "${service}${local.tag_key_delimiter}${replace(field, "_", local.tag_key_delimiter)}" => tostring(value)
-      if value != null
+      for field, value in profile : "${service}${local.tag_key_delimiter}${replace(field, "_", "-")}" => tostring(value)
+      if value != null && tostring(value) != ""
     }
   ]...)
 

@@ -54,7 +54,7 @@ variable "tag_prefix" {
 variable "tag_key_delimiter" {
   type        = string
   default     = null
-  description = "Separator used inside composite tag key names (e.g. \"cost<sep>center\", \"db<sep>engine\"). Falls back to context, then to \"-\". Set to \":\" to build a tag tree, e.g. \"tagger:cost:center\"."
+  description = "Separator used inside composite tag key names (e.g. \"cost<sep>center\", \"db<sep>engine\"). Falls back to context, then to \":\" (a tag tree, e.g. \"tagger:cost:center\"). Set to \"-\" for a flat key instead."
 }
 
 variable "owner" {
@@ -128,11 +128,13 @@ variable "origin_version" {
 
 variable "database" {
   type = object({
-    engine         = optional(string) # postgres, mysql, mariadb, ...
-    engine_version = optional(string)
-    size           = optional(string) # db.t3.micro, Standard_B2s, ... - name varies per provider
-    multi_az       = optional(bool)
-    storage_gb     = optional(number) # manual only, never auto-discovered - RDS storage autoscaling changes it live
+    engine            = optional(string) # postgres, mysql, mariadb, ...
+    engine_version    = optional(string)
+    size              = optional(string) # db.t3.micro, Standard_B2s, ... - name varies per provider
+    multi_az          = optional(bool)
+    storage_gb        = optional(number) # manual only, never auto-discovered - RDS storage autoscaling changes it live
+    storage_type      = optional(string) # gp2, gp3, io1, io2, ... - the type itself doesn't autoscale, unlike storage_gb
+    storage_encrypted = optional(bool)
   })
   default     = null
   description = "RDS / Azure Database / DO Managed Databases / etc."
@@ -142,8 +144,11 @@ variable "compute" {
   type = object({
     instance_id   = optional(string)
     instance_type = optional(string) # t3.micro, Standard_B2s, cx11, ...
-    os            = optional(string) # ubuntu, amazon-linux, debian, ...
+    os            = optional(string) # distro (ubuntu, debian, ...) on Hetzner; AWS has no instance-level equivalent, EC2's data source sends its billing/licensing platform category instead (e.g. "Linux/UNIX")
     os_version    = optional(string)
+    architecture  = optional(string) # x86_64, arm64, ...
+    lifecycle     = optional(string) # on-demand, spot, scheduled - set at launch, doesn't change without relaunching the instance
+    elastic_ip    = optional(string) # the Elastic IP itself, if one is associated - null if the instance has no Elastic IP (an ephemeral public IP doesn't count)
   })
   default     = null
   description = "EC2 / Azure VM / DO Droplet / Hetzner Server / etc."
@@ -201,6 +206,7 @@ variable "serverless" {
     runtime         = optional(string) # nodejs20.x, python3.12, ...
     memory_mb       = optional(number)
     timeout_seconds = optional(number)
+    architecture    = optional(string) # x86_64, arm64, ...
   })
   default     = null
   description = "Lambda / Azure Functions / Cloudflare Workers / etc."
