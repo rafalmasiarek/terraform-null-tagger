@@ -69,13 +69,14 @@ locals {
   # become hyphens to match every other tag key's style), skipping any
   # service left null and any field left null within a given service.
   service_profiles = {
-    db       = var.database
-    compute  = var.compute
-    cache    = var.cache
-    lb       = var.load_balancer
-    objstore = var.object_storage
-    volume   = var.block_storage
-    k8s      = var.kubernetes
+    db         = var.database
+    compute    = var.compute
+    cache      = var.cache
+    lb         = var.load_balancer
+    objstore   = var.object_storage
+    volume     = var.block_storage
+    k8s        = var.kubernetes
+    serverless = var.serverless
   }
 
   service_tags = merge([

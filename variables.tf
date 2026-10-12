@@ -170,3 +170,13 @@ variable "kubernetes" {
   default     = null
   description = "EKS / AKS / DOKS / etc. Null on providers without a managed offering (e.g. Hetzner, where k3s is typically self-managed on compute instances instead)."
 }
+
+variable "serverless" {
+  type = object({
+    runtime         = optional(string) # nodejs20.x, python3.12, ...
+    memory_mb       = optional(number)
+    timeout_seconds = optional(number)
+  })
+  default     = null
+  description = "Lambda / Azure Functions / Cloudflare Workers / etc."
+}
