@@ -60,7 +60,13 @@ variable "owner_contact" {
 variable "managed_by" {
   type        = bool
   default     = null
-  description = "Whether to add managed-by=terraform. Falls back to context, then to true."
+  description = "Whether to add the managed-by=terraform tag. Falls back to context, then to true."
+}
+
+variable "managed_by_key" {
+  type        = string
+  default     = null
+  description = "Tag key for the managed-by marker - never prefixed with tag_prefix, like Name. Falls back to context, then to \"managed-by\". Override if your org/tooling expects a different casing (e.g. \"ManagedBy\")."
 }
 
 variable "cost_center" {

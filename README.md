@@ -7,7 +7,10 @@ dependency on `cloudposse/label/null`.
 
 - `name_prefix` only, never a final name - caller relies on the target
   resource's own `name_prefix`/`bucket_prefix` for the AWS-generated suffix.
-- `Name` tag is never prefixed; every other tag key gets `tag_prefix`.
+- `Name` and `managed-by` are never prefixed; every other tag key gets
+  `tag_prefix`. `managed-by`'s key is itself overridable via
+  `managed_by_key` (e.g. `"ManagedBy"`) - different tools/orgs expect
+  different casing for this one.
 - `origin_source`/`origin_version` are passive inputs - feed them from
   `data.tagger_origin.self.{source,version}`
   ([terraform-provider-tagger](https://github.com/rafalmasiarek/terraform-provider-tagger)).

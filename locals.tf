@@ -13,6 +13,7 @@ locals {
   tag_prefix     = coalesce(var.tag_prefix, try(var.context.tag_prefix, null), "tagger:")
   name_order     = var.name_order != null ? var.name_order : try(var.context.name_order, ["namespace", "environment", "attributes"])
   managed_by     = var.managed_by != null ? var.managed_by : try(var.context.managed_by, true)
+  managed_by_key = coalesce(var.managed_by_key, try(var.context.managed_by_key, null), "managed-by")
   owner_contact  = var.owner_contact != null ? var.owner_contact : try(var.context.owner_contact, null)
   cost_center    = var.cost_center != null ? var.cost_center : try(var.context.cost_center, null)
   application    = var.application != null ? var.application : try(var.context.application, null)
@@ -50,7 +51,6 @@ locals {
       owner          = local.owner
       tagger-version = local.tagger_module_version
     },
-    local.managed_by ? { managed-by = "terraform" } : {},
     local.owner_contact != null ? { owner-contact = local.owner_contact } : {},
     local.cost_center != null ? { cost-center = local.cost_center } : {},
     local.application != null ? { application = local.application } : {},
@@ -91,9 +91,17 @@ locals {
     "${local.tag_prefix}${k}" => v
   }
 
-  # Name is special-cased: AWS Console reads this exact key, verbatim, for
-  # the resource's display name - it must never carry tag_prefix.
-  tags = var.name != null ? merge(local.prefixed_tags, { Name = local.computed_name }) : local.prefixed_tags
+  # Name and managed-by are special-cased, never prefixed: AWS Console reads
+  # Name verbatim for the display name, and managed-by is a cross-tool
+  # convention (automation/cleanup scripts, policies) that external tools
+  # expect to find under its own bare key, not namespaced.
+  managed_by_tag = local.managed_by ? { (local.managed_by_key) = "terraform" } : {}
+
+  tags = merge(
+    local.prefixed_tags,
+    local.managed_by_tag,
+    var.name != null ? { Name = local.computed_name } : {},
+  )
 
   # Bundle of every shared (non-per-call) setting, for the NEXT call's
   # `context` input - deliberately excludes name/attributes/created_at.
@@ -105,6 +113,7 @@ locals {
     tag_prefix     = local.tag_prefix
     name_order     = local.name_order
     managed_by     = local.managed_by
+    managed_by_key = local.managed_by_key
     owner_contact  = local.owner_contact
     cost_center    = local.cost_center
     application    = local.application
