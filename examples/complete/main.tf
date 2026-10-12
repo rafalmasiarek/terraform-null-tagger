@@ -1,4 +1,4 @@
-# One module call for the whole stack.
+# One "base" call defines everything shared across the whole stack.
 module "tagger" {
   source = "../../"
 
@@ -12,30 +12,33 @@ module "tagger" {
   # (terraform-provider-tagger), not hardcoded.
   origin_source  = "github.com/rafalmasiarek/terraform-aws-vpc"
   origin_version = "v0.3.1"
-
-  names = {
-    sre_reports = "sre-reports"
-    other_thing = "other-thing"
-  }
 }
 
-# Real usage (no aws provider configured in this example, so shown as
-# comments rather than actual resources):
-#
-# resource "aws_s3_bucket" "sre_reports" {
-#   bucket_prefix = "${module.tagger.name_prefix}sre-reports-"
-#   tags          = module.tagger.tags_by_name["sre_reports"]
-# }
-#
-# resource "aws_iam_role" "other_thing" {
-#   name_prefix = "${module.tagger.name_prefix}other-thing-"
-#   tags        = module.tagger.tags_by_name["other_thing"]
-# }
+# Every per-resource call only needs context + name - nothing else repeated.
+module "tagger_sre_reports" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "sre-reports"
+}
+
+module "tagger_other_thing" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "other-thing"
+}
 
 output "name_prefix" {
-  value = module.tagger.name_prefix
+  value = module.tagger_sre_reports.name_prefix
 }
 
-output "tags_by_name" {
-  value = module.tagger.tags_by_name
+output "computed_name" {
+  value = module.tagger_sre_reports.computed_name
+}
+
+output "tags_sre_reports" {
+  value = module.tagger_sre_reports.tags
+}
+
+output "tags_other_thing" {
+  value = module.tagger_other_thing.tags
 }

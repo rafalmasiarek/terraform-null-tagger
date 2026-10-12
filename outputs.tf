@@ -13,16 +13,6 @@ output "tags" {
   value       = local.tags
 }
 
-output "tags_by_name" {
-  description = "Batch mode: one entry per key in var.names, each a full tag map (including its own Name/origin-name). Use when tagging many resources from a single module call instead of one call per resource."
-  value       = local.tags_by_name
-}
-
-output "computed_name_by_name" {
-  description = "Batch mode: one entry per key in var.names, each name_prefix + that entry's name, without any AWS-generated suffix."
-  value       = local.computed_name_by_name
-}
-
 output "context" {
   description = "Bundle of every shared, stack-wide setting (namespace, environment, owner, tag_prefix, origin_source, origin_version, ...) from this call - pass straight into a later call's `context` input to avoid repeating them per resource."
   value       = local.context
