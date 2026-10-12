@@ -45,9 +45,10 @@ locals {
 
   standard_tags = merge(
     {
-      namespace   = local.namespace
-      environment = local.environment
-      owner       = local.owner
+      namespace      = local.namespace
+      environment    = local.environment
+      owner          = local.owner
+      tagger-version = local.tagger_module_version
     },
     local.managed_by ? { managed-by = "terraform" } : {},
     local.owner_contact != null ? { owner-contact = local.owner_contact } : {},
