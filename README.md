@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="https://masiarek.pl/assets/img/tagger-1200-q82.webp"
+    src="https://masiarek.pl/assets/img/tagger_v1/tagger-1200-q82.webp"
     alt="terraform-null-tagger - Terraform module for standardized resource naming and tagging"
     width="600"
   />
@@ -14,7 +14,13 @@ Computes a `name_prefix` and tag map from namespace, environment, owner,
 module origin, and predefined per-service tag sets. Pure logic, no
 resources of its own.
 
-## Design
+<p>
+  <img
+    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_design.png"
+    alt="Design"
+    width="400"
+  />
+</p>
 
 - `name_prefix` only, never a final name - caller relies on the target
   resource's own `name_prefix`/`bucket_prefix` for the AWS-generated suffix.
@@ -33,7 +39,13 @@ resources of its own.
   `load_balancer`, `object_storage`, `block_storage`, `kubernetes`,
   `serverless`. Flattened into `<service>-<field>` tag keys.
 
-## Usage
+<p>
+  <img
+    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_usage.png"
+    alt="Usage"
+    width="400"
+  />
+</p>
 
 ```hcl
 module "tagger" {
@@ -56,7 +68,7 @@ module "tagger_sre_reports" {
 }
 ```
 
-## Creation timestamp
+### Creation timestamp
 
 `created_at` takes a plain string - this module does not create anything,
 so it can't freeze a timestamp on its own. Use `time_static`, which only
@@ -82,3 +94,11 @@ every run, `time_static` does not.
 the one call it's given to) - set it on the base `tagger` call and it will
 *not* propagate to `tagger_sre_reports`. Pass `time_static.created.rfc3339`
 explicitly on every call that needs it.
+
+<p align="right">
+  <img
+    src="https://masiarek.pl/assets/img/tagger_v1/tagger-author_sign.png"
+    alt="by Rafał Masiarek"
+    width="280"
+  />
+</p>
