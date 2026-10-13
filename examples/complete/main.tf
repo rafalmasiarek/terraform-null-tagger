@@ -20,10 +20,12 @@ module "tagger_sre_reports" {
   context = module.tagger.context
   name    = "sre-reports"
 
-  database = {
-    engine         = "postgres"
-    engine_version = "15.4"
-    multi_az       = true
+  service = {
+    database = {
+      engine         = "postgres"
+      engine_version = "15.4"
+      multi_az       = true
+    }
   }
 }
 

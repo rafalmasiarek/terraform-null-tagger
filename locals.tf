@@ -81,16 +81,16 @@ locals {
   # "<service><tag_key_delimiter><field>" keys, skipping any service left
   # null and any field left null within a given service.
   service_profiles = {
-    db         = var.database
-    compute    = var.compute
-    cache      = var.cache
-    lb         = var.load_balancer
-    objstore   = var.object_storage
-    volume     = var.block_storage
-    k8s        = var.kubernetes
-    serverless = var.serverless
-    asg        = var.autoscaling_group
-    net        = var.network
+    db         = try(var.service.database, null)
+    compute    = try(var.service.compute, null)
+    cache      = try(var.service.cache, null)
+    lb         = try(var.service.load_balancer, null)
+    objstore   = try(var.service.object_storage, null)
+    volume     = try(var.service.block_storage, null)
+    k8s        = try(var.service.kubernetes, null)
+    serverless = try(var.service.serverless, null)
+    asg        = try(var.service.autoscaling_group, null)
+    net        = try(var.service.network, null)
   }
 
   # tag_key_delimiter groups by category/service only

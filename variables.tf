@@ -121,117 +121,28 @@ variable "origin_version" {
   description = "Version/ref of the calling module. Passive input, usually shared via context like origin_source."
 }
 
-# Predefined, provider-agnostic service tag sets. Each is optional (default
-# null - no tags generated), filled in by hand or by a provider's
-# auto-discovery (e.g. terraform-provider-tagger). Never pulled from
-# context - always specific to this one resource.
-
-variable "database" {
-  type = object({
-    engine            = optional(string) # postgres, mysql, mariadb, ...
-    engine_version    = optional(string)
-    size              = optional(string) # db.t3.micro, Standard_B2s, ... - name varies per provider
-    multi_az          = optional(bool)
-    storage_gb        = optional(number) # manual only, never auto-discovered - RDS storage autoscaling changes it live
-    storage_type      = optional(string) # gp2, gp3, io1, io2, ... - the type itself doesn't autoscale, unlike storage_gb
-    storage_encrypted = optional(bool)
-  })
-  default     = null
-  description = "RDS / Azure Database / DO Managed Databases / etc."
-}
-
-variable "compute" {
-  type = object({
-    instance_id        = optional(string)
-    instance_type      = optional(string) # t3.micro, Standard_B2s, cx11, ...
-    os                 = optional(string) # distro (ubuntu, debian, ...) on Hetzner; AWS has no instance-level equivalent, EC2's data source sends its billing/licensing platform category instead (e.g. "Linux/UNIX")
-    os_version         = optional(string)
-    architecture       = optional(string) # x86_64, arm64, ...
-    instance_lifecycle = optional(string) # on-demand, spot, scheduled - set at launch, doesn't change without relaunching the instance. Named instance_lifecycle, not lifecycle - "lifecycle" is a reserved root attribute name in Terraform's provider schemas
-    elastic_ip         = optional(string) # the Elastic IP itself, if one is associated - null if the instance has no Elastic IP (an ephemeral public IP doesn't count)
-  })
-  default     = null
-  description = "EC2 / Azure VM / DO Droplet / Hetzner Server / etc."
-}
-
-variable "cache" {
-  type = object({
-    engine         = optional(string) # redis, memcached
-    engine_version = optional(string)
-    size           = optional(string)
-  })
-  default     = null
-  description = "ElastiCache / Azure Cache for Redis / DO Managed Redis / etc."
-}
-
-variable "load_balancer" {
-  type = object({
-    type      = optional(string) # application, network, classic
-    algorithm = optional(string) # round_robin, least_connections, ...
-  })
-  default     = null
-  description = "ALB/NLB / Azure Load Balancer / DO LB / Hetzner Load Balancer / etc."
-}
-
-variable "object_storage" {
-  type = object({
-    storage_class = optional(string) # standard, infrequent_access, glacier, ...
-    versioning    = optional(bool)
-  })
-  default     = null
-  description = "S3 / Azure Blob / DO Spaces / Hetzner Object Storage / etc."
-}
-
-variable "block_storage" {
-  type = object({
-    size_gb = optional(number)
-    type    = optional(string) # ssd, hdd, gp3, io2, ...
-    iops    = optional(number)
-  })
-  default     = null
-  description = "EBS / Azure Disk / DO Volumes / Hetzner Volumes / etc."
-}
-
-variable "kubernetes" {
-  type = object({
-    version    = optional(string)
-    node_count = optional(number)
-  })
-  default     = null
-  description = "EKS / AKS / DOKS / etc. Null on providers without a managed offering (e.g. Hetzner, where k3s is typically self-managed on compute instances instead)."
-}
-
-variable "serverless" {
-  type = object({
-    runtime         = optional(string) # nodejs20.x, python3.12, ...
-    memory_mb       = optional(number)
-    timeout_seconds = optional(number)
-    architecture    = optional(string) # x86_64, arm64, ...
-  })
-  default     = null
-  description = "Lambda / Azure Functions / Cloudflare Workers / etc."
-}
-
-variable "autoscaling_group" {
-  type = object({
-    min_size                = optional(number)
-    max_size                = optional(number)
-    desired_capacity        = optional(number) # manual only, never auto-discovered - live value, causes plan diffs
-    launch_template_id      = optional(string)
-    launch_template_version = optional(string)
-  })
-  default     = null
-  description = "ASG / Azure VMSS / DO Autoscale Pool / etc."
-}
-
-variable "network" {
-  type = object({
-    vpc_id               = optional(string)
-    subnet_id            = optional(string)
-    availability_zone    = optional(string)
-    availability_zone_id = optional(string) # globally stable AZ identity (e.g. "euc1-az1") - availability_zone alone is account-relative, can map to a different physical AZ in a different account
-    private_ip           = optional(string)
-  })
-  default     = null
-  description = "Placement info - cross-cutting, not tied to one service category. Subnets, EC2 instances, RDS instances, or anything else with a VPC/AZ can set this."
+# Service-category tag data, consolidated into one `any`-typed input
+# instead of one variable per category. Adding a new category here never
+# requires every consuming module's tagger.tf to gain a new pass-through
+# line (see terraform-provider-tagger's tagger.tf export) - the cost is
+# per-field type-checking: a typo like `service.databse` silently tags
+# nothing instead of erroring. Never pulled from context - always
+# specific to this one resource.
+#
+# Recognized categories, each optional, every field within each optional:
+#
+#   database = { engine, engine_version, size, multi_az, storage_gb (manual only - RDS storage autoscaling changes it live), storage_type, storage_encrypted }
+#   compute  = { instance_id, instance_type, os, os_version, architecture, instance_lifecycle, elastic_ip }
+#   cache    = { engine, engine_version, size }
+#   load_balancer  = { type, algorithm }
+#   object_storage = { storage_class, versioning }
+#   block_storage  = { size_gb, type, iops }
+#   kubernetes     = { version, node_count }
+#   serverless     = { runtime, memory_mb, timeout_seconds, architecture }
+#   autoscaling_group = { min_size, max_size, desired_capacity (manual only - the autoscaler itself changes it live), launch_template_id, launch_template_version }
+#   network = { vpc_id, subnet_id, availability_zone, availability_zone_id, private_ip } - cross-cutting placement info, not tied to one service
+variable "service" {
+  type        = any
+  default     = {}
+  description = "Service-category tag data (database, compute, cache, load_balancer, object_storage, block_storage, kubernetes, serverless, autoscaling_group, network). See this file's comment above for each category's recognized fields."
 }
