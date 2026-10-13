@@ -142,13 +142,13 @@ variable "database" {
 
 variable "compute" {
   type = object({
-    instance_id   = optional(string)
-    instance_type = optional(string) # t3.micro, Standard_B2s, cx11, ...
-    os            = optional(string) # distro (ubuntu, debian, ...) on Hetzner; AWS has no instance-level equivalent, EC2's data source sends its billing/licensing platform category instead (e.g. "Linux/UNIX")
-    os_version    = optional(string)
-    architecture  = optional(string) # x86_64, arm64, ...
-    lifecycle     = optional(string) # on-demand, spot, scheduled - set at launch, doesn't change without relaunching the instance
-    elastic_ip    = optional(string) # the Elastic IP itself, if one is associated - null if the instance has no Elastic IP (an ephemeral public IP doesn't count)
+    instance_id        = optional(string)
+    instance_type      = optional(string) # t3.micro, Standard_B2s, cx11, ...
+    os                 = optional(string) # distro (ubuntu, debian, ...) on Hetzner; AWS has no instance-level equivalent, EC2's data source sends its billing/licensing platform category instead (e.g. "Linux/UNIX")
+    os_version         = optional(string)
+    architecture       = optional(string) # x86_64, arm64, ...
+    instance_lifecycle = optional(string) # on-demand, spot, scheduled - set at launch, doesn't change without relaunching the instance. Named instance_lifecycle, not lifecycle - "lifecycle" is a reserved root attribute name in Terraform's provider schemas
+    elastic_ip         = optional(string) # the Elastic IP itself, if one is associated - null if the instance has no Elastic IP (an ephemeral public IP doesn't count)
   })
   default     = null
   description = "EC2 / Azure VM / DO Droplet / Hetzner Server / etc."
@@ -222,4 +222,16 @@ variable "autoscaling_group" {
   })
   default     = null
   description = "ASG / Azure VMSS / DO Autoscale Pool / etc."
+}
+
+variable "network" {
+  type = object({
+    vpc_id               = optional(string)
+    subnet_id            = optional(string)
+    availability_zone    = optional(string)
+    availability_zone_id = optional(string) # globally stable AZ identity (e.g. "euc1-az1") - availability_zone alone is account-relative, can map to a different physical AZ in a different account
+    private_ip           = optional(string)
+  })
+  default     = null
+  description = "Placement info - cross-cutting, not tied to one service category. Subnets, EC2 instances, RDS instances, or anything else with a VPC/AZ can set this."
 }

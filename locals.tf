@@ -90,6 +90,7 @@ locals {
     k8s        = var.kubernetes
     serverless = var.serverless
     asg        = var.autoscaling_group
+    net        = var.network
   }
 
   # tag_key_delimiter groups by category/service only
