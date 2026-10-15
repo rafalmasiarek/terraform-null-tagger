@@ -2,6 +2,10 @@ variable "context" {
   type        = any
   default     = null
   description = "Bundle of shared settings from a previous call's `context` output. Lets you set namespace/environment/owner/tag_prefix/origin_source/origin_version once in a \"base\" call, then reuse them across many per-resource calls that only need to pass `context` + `name`. Any variable set explicitly below always overrides the matching value in `context`."
+  validation {
+    condition     = var.context == null ? true : can(keys(var.context))
+    error_message = "context must be a map - pass a previous call's `context` output, not a scalar."
+  }
 }
 
 variable "namespace" {
@@ -20,6 +24,10 @@ variable "name" {
   type        = string
   default     = null
   description = "Base resource name, e.g. \"sre-reports\" - optional, used only for the Name/origin-name tags, and always specific to this one call (never taken from context). Never fed into name_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name_prefix/bucket_prefix/identifier_prefix argument."
+  validation {
+    condition     = var.name == null ? true : length(trimspace(var.name)) > 0
+    error_message = "name must be a non-empty string - omit it (null) instead of passing empty or blank."
+  }
 }
 
 variable "attributes" {
@@ -43,6 +51,10 @@ variable "name_order" {
   type        = list(string)
   default     = null
   description = "Order of name_prefix segments. Valid keys: namespace, environment, attributes."
+  validation {
+    condition     = var.name_order == null ? true : length(var.name_order) > 0 && alltrue([for k in var.name_order : contains(["namespace", "environment", "attributes"], k)])
+    error_message = "name_order must be a non-empty list of: namespace, environment, attributes."
+  }
 }
 
 variable "tag_prefix" {
@@ -106,7 +118,16 @@ variable "extra_tags" {
     A map value is flattened one level deep, joined with
     tag_key_delimiter: { contact = { email = "a@b.c", phone = "123" } }
     -> contact<delim>email = "a@b.c", contact<delim>phone = "123".
+    Null or empty values are dropped.
   EOT
+  validation {
+    condition = can(keys(var.extra_tags)) && alltrue([
+      for k, v in var.extra_tags : (!can(keys(v)) && !can(flatten(v))) || can(keys(v)) && alltrue([
+        for k2, v2 in v : !can(keys(v2)) && !can(flatten(v2))
+      ])
+    ])
+    error_message = "extra_tags must be a map of scalar (string/number/bool) or null values, or maps of scalars one level deep - no lists or deeper nesting."
+  }
 }
 
 variable "origin_source" {
@@ -141,8 +162,17 @@ variable "origin_version" {
 #   serverless     = { runtime, memory_mb, timeout_seconds, architecture }
 #   autoscaling_group = { min_size, max_size, desired_capacity (manual only - the autoscaler itself changes it live), launch_template_id, launch_template_version }
 #   network = { vpc_id, subnet_id, availability_zone, availability_zone_id, private_ip } - cross-cutting placement info, not tied to one service
+#   container  = { cluster, task_family, node_group } - container platform (ECS/EKS); the service name itself goes to the `application` input
 variable "service" {
   type        = any
   default     = {}
-  description = "Service-category tag data (database, compute, cache, load_balancer, object_storage, block_storage, kubernetes, serverless, autoscaling_group, network). See this file's comment above for each category's recognized fields."
+  description = "Service-category tag data (database, compute, cache, load_balancer, object_storage, block_storage, kubernetes, serverless, autoscaling_group, network, container). See this file's comment above for each category's recognized fields."
+  validation {
+    condition = var.service == null ? true : can(keys(var.service)) && alltrue([
+      for cat, profile in var.service : profile == null ? true : can(keys(profile)) && alltrue([
+        for f, v in profile : v == null || (!can(keys(v)) && !can(flatten(v)))
+      ])
+    ])
+    error_message = "service must be a map of categories, each a map of scalar (string/number/bool) or null fields - no lists or nested maps."
+  }
 }

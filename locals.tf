@@ -10,9 +10,11 @@ locals {
 
   # Raw values - used as-is for tag values, so a caller's original casing
   # (e.g. "Acme") is never altered in the tags output.
-  namespace         = coalesce(var.namespace, try(var.context.namespace, null))
-  environment       = coalesce(var.environment, try(var.context.environment, null))
-  owner             = coalesce(var.owner, try(var.context.owner, null))
+  # Ternary, not coalesce(): coalesce() errors when every argument is null
+  # or an empty string, which a default call (name only) produces.
+  namespace         = var.namespace != null ? var.namespace : try(var.context.namespace, null)
+  environment       = var.environment != null ? var.environment : try(var.context.environment, null)
+  owner             = var.owner != null ? var.owner : try(var.context.owner, null)
   delimiter         = coalesce(var.delimiter, try(var.context.delimiter, null), "-")
   tag_prefix        = coalesce(var.tag_prefix, try(var.context.tag_prefix, null), "tagger:")
   tag_key_delimiter = coalesce(var.tag_key_delimiter, try(var.context.tag_key_delimiter, null), ":")
@@ -32,7 +34,7 @@ locals {
   # produce an invalid resource name downstream.
   namespace_for_prefix   = local.namespace != null ? lower(replace(local.namespace, local.regex_replace_chars, "")) : null
   environment_for_prefix = local.environment != null ? lower(replace(local.environment, local.regex_replace_chars, "")) : null
-  attributes_for_prefix  = [for a in local.attributes : lower(replace(a, local.regex_replace_chars, ""))]
+  attributes_for_prefix  = [for a in local.attributes : lower(replace(a, local.regex_replace_chars, "")) if a != null]
 
   # name_prefix: namespace/environment/attributes only - never the specific
   # resource name. The caller appends its own bare name and relies on the
@@ -44,12 +46,16 @@ locals {
     attributes  = join(local.delimiter, local.attributes_for_prefix)
   }
 
+  # Null segments (namespace/environment left unset) are dropped as well -
+  # join() rejects null, and an empty segment would add a bare delimiter.
   name_segments_ordered = [
     for key in local.name_order : local.name_segments_map[key]
-    if local.name_segments_map[key] != ""
+    if local.name_segments_map[key] != null && local.name_segments_map[key] != ""
   ]
 
-  name_prefix = "${lower(join(local.delimiter, local.name_segments_ordered))}${local.delimiter}"
+  # Trailing delimiter only when at least one segment survived - a default
+  # call (name only, no context) must not produce a bare "-".
+  name_prefix = length(local.name_segments_ordered) > 0 ? "${lower(join(local.delimiter, local.name_segments_ordered))}${local.delimiter}" : ""
 
   # Only meaningful when var.name is given - the predicted full name (prefix
   # + bare name), without any AWS-generated suffix, used purely for the
@@ -57,12 +63,13 @@ locals {
   # the origin-name tag below - only name_prefix is.
   computed_name = var.name != null ? "${local.name_prefix}${var.name}" : null
 
+  # Null entries are omitted, not emitted - a null value would either fail
+  # downstream map(string) conversion or tag the resource with the literal
+  # "null" string.
   standard_tags = merge(
-    {
-      namespace   = local.namespace
-      environment = local.environment
-      owner       = local.owner
-    },
+    local.namespace != null ? { namespace = local.namespace } : {},
+    local.environment != null ? { environment = local.environment } : {},
+    local.owner != null ? { owner = local.owner } : {},
     local.owner_contact != null ? { "owner${local.tag_key_delimiter}contact" = local.owner_contact } : {},
     local.cost_center != null ? { "cost${local.tag_key_delimiter}center" = local.cost_center } : {},
     local.application != null ? { application = local.application } : {},
@@ -77,7 +84,7 @@ locals {
 
   # Predefined, provider-agnostic service tag sets (database, compute,
   # cache, load_balancer, object_storage, block_storage, kubernetes,
-  # serverless, autoscaling_group) - each optional, flattened into
+  # serverless, autoscaling_group, network, container) - each optional, flattened into
   # "<service><tag_key_delimiter><field>" keys, skipping any service left
   # null and any field left null within a given service.
   service_profiles = {
@@ -91,6 +98,7 @@ locals {
     serverless = try(var.service.serverless, null)
     asg        = try(var.service.autoscaling_group, null)
     net        = try(var.service.network, null)
+    container  = try(var.service.container, null)
   }
 
   # tag_key_delimiter groups by category/service only
@@ -107,10 +115,13 @@ locals {
   # a map (flattened one level deep, joined with tag_key_delimiter).
   # can(keys(v)) is how we tell the two apart - it succeeds for any
   # map/object, fails (caught by can()) for a string/bool/number.
+  # Null and empty values are dropped at both levels - tostring(null) would
+  # otherwise emit the literal "null" tag value.
   extra_tags_flat = merge([
     for k, v in var.extra_tags : can(keys(v)) ? {
       for k2, v2 in v : "${k}${local.tag_key_delimiter}${k2}" => tostring(v2)
-    } : { "${k}" = tostring(v) }
+      if v2 != null && tostring(v2) != ""
+    } : (v != null && tostring(v) != "" ? { "${k}" = tostring(v) } : {})
   ]...)
 
   prefixed_tags = {
@@ -124,11 +135,13 @@ locals {
   # expect to find under its own bare key, not namespaced.
   managed_by_tag = local.managed_by ? { (local.managed_by_key) = "terraform" } : {}
 
-  tags = merge(
-    local.prefixed_tags,
-    local.managed_by_tag,
-    var.name != null ? { Name = local.computed_name } : {},
-  )
+  # Final safety net: no null or empty-string value ever reaches a provider,
+  # regardless of which source produced it.
+  tags = {
+    for k, v in merge(local.prefixed_tags, local.managed_by_tag, var.name != null ? { Name = local.computed_name } : {}) :
+    k => v
+    if v != null && tostring(v) != ""
+  }
 
   # Bundle of every shared (non-per-call) setting, for the NEXT call's
   # `context` input - deliberately excludes name/attributes/created_at.

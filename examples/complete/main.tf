@@ -35,6 +35,25 @@ module "tagger_other_thing" {
   name    = "other-thing"
 }
 
+# Container-platform convention: shared context + per-resource call.
+module "tagger_api" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "api"
+  application = "billing"
+  service = {
+    container = {
+      cluster     = "prod-eks"
+      task_family = "api"
+      node_group  = "ng-general"
+    }
+  }
+  extra_tags = {
+    tier = "frontend"
+    note = "" # dropped - null/empty values never reach the tags output
+  }
+}
+
 output "name_prefix" {
   value = module.tagger_sre_reports.name_prefix
 }
@@ -49,4 +68,8 @@ output "tags_sre_reports" {
 
 output "tags_other_thing" {
   value = module.tagger_other_thing.tags
+}
+
+output "tags_api" {
+  value = module.tagger_api.tags
 }
