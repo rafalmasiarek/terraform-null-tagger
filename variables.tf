@@ -52,7 +52,7 @@ variable "name_order" {
   default     = null
   description = "Order of name_prefix segments. Valid keys: namespace, environment, attributes."
   validation {
-    condition     = var.name_order == null ? true : length(var.name_order) > 0 && alltrue([for k in var.name_order : contains(["namespace", "environment", "attributes"], k)])
+    condition     = can(element([for _ in [1] : 1 if var.name_order == null || length(var.name_order) > 0 && alltrue([for k in var.name_order : k != null && contains(["namespace", "environment", "attributes"], k)])], 0))
     error_message = "name_order must be a non-empty list of: namespace, environment, attributes."
   }
 }
@@ -121,11 +121,11 @@ variable "extra_tags" {
     Null or empty values are dropped.
   EOT
   validation {
-    condition = can(keys(var.extra_tags)) && alltrue([
-      for k, v in var.extra_tags : (!can(keys(v)) && !can(flatten(v))) || can(keys(v)) && alltrue([
+    condition = can(element([for _ in [1] : 1 if can(keys(var.extra_tags)) && alltrue([
+      for k, v in var.extra_tags : can(keys(v)) ? alltrue([
         for k2, v2 in v : !can(keys(v2)) && !can(flatten(v2))
-      ])
-    ])
+      ]) : (!can(keys(v)) && !can(flatten(v)))
+    ])], 0))
     error_message = "extra_tags must be a map of scalar (string/number/bool) or null values, or maps of scalars one level deep - no lists or deeper nesting."
   }
 }
@@ -168,11 +168,11 @@ variable "service" {
   default     = {}
   description = "Service-category tag data (database, compute, cache, load_balancer, object_storage, block_storage, kubernetes, serverless, autoscaling_group, network, container). See this file's comment above for each category's recognized fields."
   validation {
-    condition = var.service == null ? true : can(keys(var.service)) && alltrue([
-      for cat, profile in var.service : profile == null ? true : can(keys(profile)) && alltrue([
+    condition = can(element([for _ in [1] : 1 if var.service == null || can(keys(var.service)) && alltrue([
+      for cat, profile in var.service : profile == null ? true : (can(keys(profile)) ? alltrue([
         for f, v in profile : v == null || (!can(keys(v)) && !can(flatten(v)))
-      ])
-    ])
+      ]) : false)
+    ])], 0))
     error_message = "service must be a map of categories, each a map of scalar (string/number/bool) or null fields - no lists or nested maps."
   }
 }

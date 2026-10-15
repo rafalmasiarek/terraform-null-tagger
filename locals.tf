@@ -34,7 +34,10 @@ locals {
   # produce an invalid resource name downstream.
   namespace_for_prefix   = local.namespace != null ? lower(replace(local.namespace, local.regex_replace_chars, "")) : null
   environment_for_prefix = local.environment != null ? lower(replace(local.environment, local.regex_replace_chars, "")) : null
-  attributes_for_prefix  = [for a in local.attributes : lower(replace(a, local.regex_replace_chars, "")) if a != null]
+  attributes_for_prefix = [
+    for s in [for a in local.attributes : lower(replace(a, local.regex_replace_chars, "")) if a != null] : s
+    if s != ""
+  ]
 
   # name_prefix: namespace/environment/attributes only - never the specific
   # resource name. The caller appends its own bare name and relies on the
