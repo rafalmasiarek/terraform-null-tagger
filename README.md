@@ -37,7 +37,8 @@ resources of its own.
   `context`.
 - Predefined service tag sets: `database`, `compute`, `cache`,
   `load_balancer`, `object_storage`, `block_storage`, `kubernetes`,
-  `serverless`. Flattened into `<service>-<field>` tag keys.
+  `serverless`, `autoscaling_group`, `network`, `container`. Flattened
+  into `<service>-<field>` tag keys.
 
 <p>
   <img
@@ -94,6 +95,37 @@ every run, `time_static` does not.
 the one call it's given to) - set it on the base `tagger` call and it will
 *not* propagate to `tagger_sre_reports`. Pass `time_static.created.rfc3339`
 explicitly on every call that needs it.
+
+### Container platforms
+
+For ECS/EKS-style stacks, share one base `context` across the stack and give
+each layer - cluster, service, ASG, task EBS volume, log group - its own
+per-resource call, so the whole stack carries the same convention:
+
+| convention key | input |
+|---|---|
+| cluster | `service.container.cluster` |
+| service | `application` |
+| task family | `service.container.task_family` |
+| node group | `service.container.node_group` |
+| owner / environment / cost center | `owner` / `environment` / `cost_center` |
+
+```hcl
+module "tagger_api" {
+  source  = "rafalmasiarek/tagger/null"
+  version = ">= 0.1.0"
+  context = module.tagger.context
+  name    = "api"
+  application = "billing"
+  service = {
+    container = {
+      cluster     = "prod-eks"
+      task_family = "api"
+      node_group  = "ng-general"
+    }
+  }
+}
+```
 
 <p align="right">
   <img
