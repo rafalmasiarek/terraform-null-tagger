@@ -52,7 +52,7 @@ variable "name_order" {
   default     = null
   description = "Order of name_prefix segments. Valid keys: namespace, environment, attributes."
   validation {
-    condition     = can(element([for _ in [1] : 1 if var.name_order == null || length(var.name_order) > 0 && alltrue([for k in var.name_order : k != null && contains(["namespace", "environment", "attributes"], k)])], 0))
+    condition     = var.name_order == null ? true : can(element([for _ in [1] : 1 if length(var.name_order) > 0 && alltrue([for k in var.name_order : k != null && contains(["namespace", "environment", "attributes"], k)])], 0))
     error_message = "name_order must be a non-empty list of: namespace, environment, attributes."
   }
 }
@@ -168,7 +168,7 @@ variable "service" {
   default     = {}
   description = "Service-category tag data (database, compute, cache, load_balancer, object_storage, block_storage, kubernetes, serverless, autoscaling_group, network, container). See this file's comment above for each category's recognized fields."
   validation {
-    condition = can(element([for _ in [1] : 1 if var.service == null || can(keys(var.service)) && alltrue([
+    condition = var.service == null ? true : can(element([for _ in [1] : 1 if can(keys(var.service)) && alltrue([
       for cat, profile in var.service : profile == null ? true : (can(keys(profile)) ? alltrue([
         for f, v in profile : v == null || (!can(keys(v)) && !can(flatten(v)))
       ]) : false)
