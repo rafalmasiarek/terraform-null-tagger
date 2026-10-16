@@ -163,7 +163,7 @@ variable "origin_module" {
 #   cache    = { engine, engine_version, size }
 #   load_balancer  = { type, algorithm }
 #   object_storage = { storage_class, versioning }
-#   block_storage  = { size_gb, type, iops }
+#   block_storage  = { type, file_system_type } - size_gb and iops are deliberately NOT recommended: EBS allows live resize / ModifyVolume performance changes outside Terraform, so tagging them causes perpetual plan diffs (same rule as database.storage_gb and autoscaling_group.desired_capacity)
 #   kubernetes     = { version, node_count }
 #   serverless     = { runtime, memory_mb, timeout_seconds, architecture }
 #   autoscaling_group = { min_size, max_size, desired_capacity (manual only - the autoscaler itself changes it live), launch_template_id, launch_template_version }
