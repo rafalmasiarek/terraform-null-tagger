@@ -26,6 +26,10 @@ locals {
   application       = var.application != null ? var.application : try(var.context.application, null)
   origin_source     = var.origin_source != null ? var.origin_source : try(var.context.origin_source, null)
   origin_version    = var.origin_version != null ? var.origin_version : try(var.context.origin_version, null)
+  # origin_module is deliberately NOT read from context: it identifies the
+  # specific sub-module making this call, so it must be set per call rather
+  # than inherited stack-wide like origin_source/origin_version.
+  origin_module     = var.origin_module
 
   attributes = coalesce(var.attributes, [])
 
@@ -83,6 +87,7 @@ locals {
   origin_tags = merge(
     local.origin_source != null ? { origin = local.origin_source } : {},
     local.origin_version != null ? { version = local.origin_version } : {},
+    local.origin_module != null ? { "origin${local.tag_key_delimiter}module" = local.origin_module } : {},
   )
 
   # Predefined, provider-agnostic service tag sets (database, compute,

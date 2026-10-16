@@ -142,6 +142,12 @@ variable "origin_version" {
   description = "Version/ref of the calling module. Passive input, usually shared via context like origin_source."
 }
 
+variable "origin_module" {
+  type        = string
+  default     = null
+  description = "Which sub-module of the origin produced this resource, e.g. \"service\", \"addons\", \"node-group\". Unlike origin_source/origin_version this is NOT shared via context - it's specific to each sub-module and is set per call so a stack built from one origin repo can still show which sub-module created each resource. Null when the caller doesn't track sub-modules (single-module origins)."
+}
+
 # Service-category tag data, consolidated into one `any`-typed input
 # instead of one variable per category. Adding a new category here never
 # requires every consuming module's tagger.tf to gain a new pass-through
