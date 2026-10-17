@@ -127,6 +127,21 @@ module "tagger_api" {
 }
 ```
 
+### Computed tags (provider data sources)
+
+Tags sourced from provider data sources (e.g. `tagger_aws_subnet`, `tagger_aws_vpc`)
+become available only after the resource exists. On the first plan post-create they
+appear as additions — this is expected, not drift:
+
+```
+~ tags = {
+    + "network:egress-type" = "nat-gateway"
+  }
+```
+
+After that apply the state is stable and no further diffs appear. In CI/CD a second
+`terraform apply` (idempotent) picks them up automatically.
+
 <p align="right">
   <img
     src="https://masiarek.pl/assets/img/tagger_v1/tagger-author_sign.png"
