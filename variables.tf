@@ -167,7 +167,7 @@ variable "origin_module" {
 #   kubernetes     = { version, node_count }
 #   serverless     = { runtime, memory_mb, timeout_seconds, architecture }
 #   autoscaling_group = { min_size, max_size, desired_capacity (manual only - the autoscaler itself changes it live), launch_template_id, launch_template_version }
-#   network = { vpc_id, subnet_id, availability_zone, availability_zone_id, private_ip } - cross-cutting placement info, not tied to one service
+#   network = { vpc_id, subnet_id, availability_zone, availability_zone_id, az_code, egress_type, route_table_id, default_for_az, cidr_block, instance_tenancy, ipv6_cidr_block } - cross-cutting placement info, not tied to one service. availability_zone_id is the stable AWS AZ ID (euc1-az3); az_code is a caller-defined short code for naming (euc1a). egress_type/route_table_id/default_for_az come from tagger_aws_subnet; cidr_block/instance_tenancy/ipv6_cidr_block from tagger_aws_vpc.
 #   container  = { cluster, task_family, node_group } - container platform (ECS/EKS); the service name itself goes to the `application` input
 variable "service" {
   type        = any
