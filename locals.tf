@@ -10,10 +10,12 @@ locals {
 
   # Raw values - used as-is for tag values, so a caller's original casing
   # (e.g. "Acme") is never altered in the tags output.
-  # Treats both null and "" as unset (falls through to context).
-  namespace         = coalesce(var.namespace != "" ? var.namespace : null, try(var.context.namespace, null))
-  environment       = coalesce(var.environment != "" ? var.environment : null, try(var.context.environment, null))
-  owner             = coalesce(var.owner != "" ? var.owner : null, try(var.context.owner, null))
+  # Ternary, not coalesce(): treats both null and "" as unset (falls through
+  # to context), but unlike coalesce() never errors when both the variable
+  # and context are unset - which a bare call (name only) produces.
+  namespace         = (var.namespace != null && var.namespace != "") ? var.namespace : try(var.context.namespace, null)
+  environment       = (var.environment != null && var.environment != "") ? var.environment : try(var.context.environment, null)
+  owner             = (var.owner != null && var.owner != "") ? var.owner : try(var.context.owner, null)
   delimiter         = coalesce(var.delimiter, try(var.context.delimiter, null), "-")
   tag_prefix        = coalesce(var.tag_prefix, try(var.context.tag_prefix, null), "tagger:")
   tag_key_delimiter = coalesce(var.tag_key_delimiter, try(var.context.tag_key_delimiter, null), ":")
