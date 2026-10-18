@@ -10,11 +10,10 @@ locals {
 
   # Raw values - used as-is for tag values, so a caller's original casing
   # (e.g. "Acme") is never altered in the tags output.
-  # Ternary, not coalesce(): coalesce() errors when every argument is null
-  # or an empty string, which a default call (name only) produces.
-  namespace         = var.namespace != null ? var.namespace : try(var.context.namespace, null)
-  environment       = var.environment != null ? var.environment : try(var.context.environment, null)
-  owner             = var.owner != null ? var.owner : try(var.context.owner, null)
+  # Treats both null and "" as unset (falls through to context).
+  namespace         = coalesce(var.namespace != "" ? var.namespace : null, try(var.context.namespace, null))
+  environment       = coalesce(var.environment != "" ? var.environment : null, try(var.context.environment, null))
+  owner             = coalesce(var.owner != "" ? var.owner : null, try(var.context.owner, null))
   delimiter         = coalesce(var.delimiter, try(var.context.delimiter, null), "-")
   tag_prefix        = coalesce(var.tag_prefix, try(var.context.tag_prefix, null), "tagger:")
   tag_key_delimiter = coalesce(var.tag_key_delimiter, try(var.context.tag_key_delimiter, null), ":")
@@ -29,7 +28,7 @@ locals {
   # origin_module is deliberately NOT read from context: it identifies the
   # specific sub-module making this call, so it must be set per call rather
   # than inherited stack-wide like origin_source/origin_version.
-  origin_module     = var.origin_module
+  origin_module = var.origin_module
 
   attributes = coalesce(var.attributes, [])
 
@@ -70,19 +69,17 @@ locals {
   # the origin-name tag below - only name_prefix is.
   computed_name = var.name != null ? "${local.name_prefix}${var.name}" : null
 
-  # Null entries are omitted, not emitted - a null value would either fail
-  # downstream map(string) conversion or tag the resource with the literal
-  # "null" string.
-  standard_tags = merge(
-    local.namespace != null ? { namespace = local.namespace } : {},
-    local.environment != null ? { environment = local.environment } : {},
-    local.owner != null ? { owner = local.owner } : {},
-    local.owner_contact != null ? { "owner${local.tag_key_delimiter}contact" = local.owner_contact } : {},
-    local.cost_center != null ? { "cost${local.tag_key_delimiter}center" = local.cost_center } : {},
-    local.application != null ? { application = local.application } : {},
-    var.created_at != null ? { "created${local.tag_key_delimiter}at" = var.created_at } : {},
-    var.name != null ? { "origin${local.tag_key_delimiter}name" = var.name } : {},
-  )
+  # Null/empty values are filtered by the final tags block below.
+  standard_tags = {
+    namespace                                = local.namespace
+    environment                              = local.environment
+    owner                                    = local.owner
+    "owner${local.tag_key_delimiter}contact" = local.owner_contact
+    "cost${local.tag_key_delimiter}center"   = local.cost_center
+    application                              = local.application
+    "created${local.tag_key_delimiter}at"    = var.created_at
+    "origin${local.tag_key_delimiter}name"   = var.name
+  }
 
   origin_tags = merge(
     local.origin_source != null ? { origin = local.origin_source } : {},

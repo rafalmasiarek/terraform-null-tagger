@@ -37,9 +37,9 @@ module "tagger_other_thing" {
 
 # Container-platform convention: shared context + per-resource call.
 module "tagger_api" {
-  source  = "../../"
-  context = module.tagger.context
-  name    = "api"
+  source      = "../../"
+  context     = module.tagger.context
+  name        = "api"
   application = "billing"
   service = {
     container = {

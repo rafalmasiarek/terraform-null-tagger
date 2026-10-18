@@ -28,9 +28,11 @@ resources of its own.
   `tag_prefix`. `managed-by`'s key is itself overridable via
   `managed_by_key` (e.g. `"ManagedBy"`) - different tools/orgs expect
   different casing for this one.
-- `origin_source`/`origin_version` are passive inputs - feed them from
-  `data.tagger_origin.self.{source,version}`
-  ([terraform-provider-tagger](https://github.com/rafalmasiarek/terraform-provider-tagger)).
+- `origin_source`/`origin_version`/`origin_module` are passive inputs - feed
+  them from `data.tagger_origin.self.{source,version}` and hardcode the module
+  path (e.g. `"github.com/rafalmasiarek/terraform-aws-vpc"`). They are
+  deliberately NOT inherited from `context` — each sub-module identifies
+  itself independently. See [terraform-provider-tagger](https://github.com/rafalmasiarek/terraform-provider-tagger).
 - `context` carries shared settings (namespace, owner, origin, ...) from one
   base call into every other call - set once, reuse via `context =
   module.base.context`. An explicit variable on a call always wins over
