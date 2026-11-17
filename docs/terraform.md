@@ -1,4 +1,5 @@
-<!-- BEGIN_TF_DOCS -->
+## Terraform Reference
+
 
 
 ### Requirements
@@ -130,4 +131,3 @@ output "tags_api" {
   value = module.tagger_api.tags
 }
 ```
-<!-- END_TF_DOCS -->
