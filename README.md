@@ -1,18 +1,37 @@
-<p align="center">
-  <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-1200-q82.webp"
-    alt="terraform-null-tagger - Terraform module for standardized resource naming and tagging"
-    width="600"
-  />
-</p>
-
-# Terraform Tagger
+# terraform-null-tagger
+![terraform-null-tagger](https://masiarek.pl/assets/img/tagger_v1/tagger-1200-q82.webp)
+## About
 
 **Standardized naming and tagging for Terraform resources.**
 
 Computes a `name_prefix` and tag map from namespace, environment, owner,
 module origin, and predefined per-service tag sets. Pure logic, no
 resources of its own.
+
+
+
+## License
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+```text
+The MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files, to deal in the Software
+without restriction.
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+Source: https://opensource.org/licenses/MIT
+```
+See [LICENSE](LICENSE) for full details.
+## Authors
+
+- Rafał Masiarek | [website](https://masiarek.pl) | [email](mailto:rafal@masiarek.pl) | [github](https://github.com/rafalmasiarek)
+
 
 <p>
   <img
@@ -151,3 +170,143 @@ After that apply the state is stable and no further diffs appear. In CI/CD a sec
     width="280"
   />
 </p>
+
+
+<!-- BEGIN_TF_DOCS -->
+
+
+### Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
+
+### Modules
+
+No modules.
+
+### Resources
+
+No resources.
+
+### Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_application"></a> [application](#input\_application) | n/a | `string` | `null` | no |
+| <a name="input_attributes"></a> [attributes](#input\_attributes) | Extra name\_prefix segments, in order (e.g. a region abbreviation like "euc1"). | `list(string)` | `null` | no |
+| <a name="input_context"></a> [context](#input\_context) | Bundle of shared settings from a previous call's `context` output. Lets you set namespace/environment/owner/tag\_prefix/origin\_source/origin\_version once in a "base" call, then reuse them across many per-resource calls that only need to pass `context` + `name`. Any variable set explicitly below always overrides the matching value in `context`. | `any` | `null` | no |
+| <a name="input_cost_center"></a> [cost\_center](#input\_cost\_center) | n/a | `string` | `null` | no |
+| <a name="input_created_at"></a> [created\_at](#input\_created\_at) | RFC3339 timestamp, typically time\_static.created.rfc3339 in the caller - set once, never changes, to avoid perpetual plan diffs. Always specific to this one call, never taken from context. | `string` | `null` | no |
+| <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | n/a | `string` | `null` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | e.g. dev, staging, prod. Required, either here or via context. | `string` | `null` | no |
+| <a name="input_extra_tags"></a> [extra\_tags](#input\_extra\_tags) | Custom tags, keyed however you like. A scalar value (string, bool,<br/>number) is used as-is: { security = true } -> security = "true".<br/>A map value is flattened one level deep, joined with<br/>tag\_key\_delimiter: { contact = { email = "a@b.c", phone = "123" } }<br/>-> contact<delim>email = "a@b.c", contact<delim>phone = "123".<br/>Null or empty values are dropped. | `any` | `{}` | no |
+| <a name="input_managed_by"></a> [managed\_by](#input\_managed\_by) | Whether to add the managed-by=terraform tag. Falls back to context, then to true. | `bool` | `null` | no |
+| <a name="input_managed_by_key"></a> [managed\_by\_key](#input\_managed\_by\_key) | Tag key for the managed-by marker - never prefixed with tag\_prefix, like Name. Falls back to context, then to "managed-by". Override if your org/tooling expects a different casing (e.g. "ManagedBy"). | `string` | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | Base resource name, e.g. "sre-reports" - optional, used only for the Name/origin-name tags, and always specific to this one call (never taken from context). Never fed into name\_prefix: the module never knows the final, suffixed resource name - that's assembled by the caller via the resource's own native name\_prefix/bucket\_prefix/identifier\_prefix argument. | `string` | `null` | no |
+| <a name="input_name_order"></a> [name\_order](#input\_name\_order) | Order of name\_prefix segments. Valid keys: namespace, environment, attributes. | `list(string)` | `null` | no |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | Short organization/project identifier, e.g. "acme". Required, either here or via context. | `string` | `null` | no |
+| <a name="input_origin_module"></a> [origin\_module](#input\_origin\_module) | Which sub-module of the origin produced this resource, e.g. "service", "addons", "node-group". Unlike origin\_source/origin\_version this is NOT shared via context - it's specific to each sub-module and is set per call so a stack built from one origin repo can still show which sub-module created each resource. Null when the caller doesn't track sub-modules (single-module origins). | `string` | `null` | no |
+| <a name="input_origin_source"></a> [origin\_source](#input\_origin\_source) | Where the calling module came from, e.g. "github.com/rafalmasiarek/terraform-aws-vpc". Passive input - this module never detects it itself; pass it from data.tagger\_origin.self.source (terraform-provider-tagger) or hardcode it, usually via context so every resource in a stack shares the same value. | `string` | `null` | no |
+| <a name="input_origin_version"></a> [origin\_version](#input\_origin\_version) | Version/ref of the calling module. Passive input, usually shared via context like origin\_source. | `string` | `null` | no |
+| <a name="input_owner"></a> [owner](#input\_owner) | Team or person accountable for the resource. Required, either here or via context. | `string` | `null` | no |
+| <a name="input_owner_contact"></a> [owner\_contact](#input\_owner\_contact) | Email or @handle (Teams/Slack), e.g. "sre-team@acme.com" or "@sre-team". | `string` | `null` | no |
+| <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regex matching characters to strip from namespace/environment/attributes/name before use. Falls back to context, then to "/[^a-zA-Z0-9-]/" (letters, digits, hyphen only). | `string` | `null` | no |
+| <a name="input_service"></a> [service](#input\_service) | Service-category tag data (database, compute, cache, load\_balancer, object\_storage, block\_storage, kubernetes, serverless, autoscaling\_group, network, container). See this file's comment above for each category's recognized fields. | `any` | `{}` | no |
+| <a name="input_tag_key_delimiter"></a> [tag\_key\_delimiter](#input\_tag\_key\_delimiter) | Separator used inside composite tag key names (e.g. "cost<sep>center", "db<sep>engine"). Falls back to context, then to ":" (a tag tree, e.g. "tagger:cost:center"). Set to "-" for a flat key instead. | `string` | `null` | no |
+| <a name="input_tag_prefix"></a> [tag\_prefix](#input\_tag\_prefix) | Namespace prefix for tag keys, e.g. "acme:". Falls back to context, then to "tagger:". Never applied to the "Name" tag - AWS reads that key verbatim for the console display name. | `string` | `null` | no |
+
+### Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_computed_name"></a> [computed\_name](#output\_computed\_name) | name\_prefix + var.name, without any AWS-generated suffix. Null if var.name was not given. |
+| <a name="output_context"></a> [context](#output\_context) | Bundle of every shared, stack-wide setting (namespace, environment, owner, tag\_prefix, origin\_source, origin\_version, ...) from this call - pass straight into a later call's `context` input to avoid repeating them per resource. |
+| <a name="output_name_prefix"></a> [name\_prefix](#output\_name\_prefix) | namespace-environment-attributes-, ready to concatenate with the caller's own resource name. |
+| <a name="output_tags"></a> [tags](#output\_tags) | Full tag map, including Name (unprefixed) and every other tag key under tag\_prefix. |
+
+### Examples
+
+```hcl
+# One "base" call defines everything shared across the whole stack.
+module "tagger" {
+  source = "../../"
+
+  namespace     = "acme"
+  environment   = "prod"
+  tag_prefix    = "acme:"
+  owner         = "sre-team"
+  owner_contact = "@sre-team"
+
+  # In a real caller these two come from data.tagger_origin.self.{source,version}
+  # (terraform-provider-tagger), not hardcoded.
+  origin_source  = "github.com/rafalmasiarek/terraform-aws-vpc"
+  origin_version = "v0.3.1"
+}
+
+# Every per-resource call only needs context + name - nothing else repeated.
+module "tagger_sre_reports" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "sre-reports"
+
+  service = {
+    database = {
+      engine         = "postgres"
+      engine_version = "15.4"
+      multi_az       = true
+    }
+  }
+}
+
+module "tagger_other_thing" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "other-thing"
+}
+
+# Container-platform convention: shared context + per-resource call.
+module "tagger_api" {
+  source      = "../../"
+  context     = module.tagger.context
+  name        = "api"
+  application = "billing"
+  service = {
+    container = {
+      cluster     = "prod-eks"
+      task_family = "api"
+      node_group  = "ng-general"
+    }
+  }
+  extra_tags = {
+    tier = "frontend"
+    note = "" # dropped - null/empty values never reach the tags output
+  }
+}
+
+output "name_prefix" {
+  value = module.tagger_sre_reports.name_prefix
+}
+
+output "computed_name" {
+  value = module.tagger_sre_reports.computed_name
+}
+
+output "tags_sre_reports" {
+  value = module.tagger_sre_reports.tags
+}
+
+output "tags_other_thing" {
+  value = module.tagger_other_thing.tags
+}
+
+output "tags_api" {
+  value = module.tagger_api.tags
+}
+```
+<!-- END_TF_DOCS -->
+
+
+<!-- references -->
+
+[repo_link]: https://github.com/rafalmasiarek/terraform-null-tagger
