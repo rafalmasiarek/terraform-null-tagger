@@ -3,9 +3,25 @@
 
 
 
-![terraform-null-tagger](https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp)
 
 
+
+
+<p align="center">
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-2000.webp 2000w"
+    alt="terraform-null-tagger"
+    width="600"
+  />
+  <br />
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-2000.webp 2000w"
+    alt="by Rafał Masiarek"
+    width="200"
+  />
+</p>
 
 
 **Standardized naming and tagging for Terraform resources.**
@@ -334,17 +350,6 @@ See [LICENSE](LICENSE) for full details.
 
 - Rafał Masiarek | [website](https://masiarek.pl) | [email](mailto:rafal@masiarek.pl) | [github](https://github.com/rafalmasiarek)
 
-
-
-
-<p align="right">
-  <img
-    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp"
-    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-2000.webp 2000w"
-    alt="by Rafał Masiarek"
-    width="280"
-  />
-</p>
 
 
 
