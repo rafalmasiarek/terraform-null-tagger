@@ -1,10 +1,20 @@
 # terraform-null-tagger
+
+
+
+
 ![terraform-null-tagger](https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp)
+
+
+
+
 **Standardized naming and tagging for Terraform resources.**
 
 Computes a `name_prefix` and tag map from namespace, environment, owner,
 module origin, and predefined per-service tag sets. Pure logic, no
 resources of its own.
+
+
 
 
 
@@ -283,6 +293,8 @@ output "tags_api" {
 }
 ```
 
+
+
 <img
   src="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp"
   srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-2000.webp 2000w"
@@ -310,6 +322,8 @@ Source: https://opensource.org/licenses/MIT
 
 
 See [LICENSE](LICENSE) for full details.
+
+
 <img
   src="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp"
   srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-2000.webp 2000w"
@@ -321,9 +335,7 @@ See [LICENSE](LICENSE) for full details.
 - Rafał Masiarek | [website](https://masiarek.pl) | [email](mailto:rafal@masiarek.pl) | [github](https://github.com/rafalmasiarek)
 
 
-<!-- references -->
 
-[repo_link]: https://github.com/rafalmasiarek/terraform-null-tagger
 
 <p align="right">
   <img
@@ -335,3 +347,7 @@ See [LICENSE](LICENSE) for full details.
 </p>
 
 
+
+<!-- references -->
+
+[repo_link]: https://github.com/rafalmasiarek/terraform-null-tagger
