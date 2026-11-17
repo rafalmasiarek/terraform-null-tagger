@@ -1,6 +1,7 @@
 <p>
   <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_design.png"
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-2000.webp 2000w"
     alt="Design"
     width="400"
   />
@@ -28,7 +29,8 @@
 
 <p>
   <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_usage.png"
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-2000.webp 2000w"
     alt="Usage"
     width="400"
   />
@@ -127,11 +129,3 @@ appear as additions — this is expected, not drift:
 
 After that apply the state is stable and no further diffs appear. In CI/CD a second
 `terraform apply` (idempotent) picks them up automatically.
-
-<p align="right">
-  <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-author_sign.png"
-    alt="by Rafał Masiarek"
-    width="280"
-  />
-</p>
