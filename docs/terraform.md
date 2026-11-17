@@ -1,4 +1,11 @@
-## Terraform Reference
+<p>
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-1983.webp 1983w"
+    alt="Terraform Reference"
+    width="400"
+  />
+</p>
 
 
 

@@ -1,7 +1,5 @@
 # terraform-null-tagger
-![terraform-null-tagger](https://masiarek.pl/assets/img/tagger_v1/tagger-1200-q82.webp)
-## About
-
+![terraform-null-tagger](https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp)
 **Standardized naming and tagging for Terraform resources.**
 
 Computes a `name_prefix` and tag map from namespace, environment, owner,
@@ -13,7 +11,8 @@ resources of its own.
 
 <p>
   <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_design.png"
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-design-4ed344d392a25b94cde7fd92d1f691c0-2000.webp 2000w"
     alt="Design"
     width="400"
   />
@@ -41,7 +40,8 @@ resources of its own.
 
 <p>
   <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-h_usage.png"
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-usage-39fd292b354a7836f83be4024d8f17ae-2000.webp 2000w"
     alt="Usage"
     width="400"
   />
@@ -141,16 +141,15 @@ appear as additions — this is expected, not drift:
 After that apply the state is stable and no further diffs appear. In CI/CD a second
 `terraform apply` (idempotent) picks them up automatically.
 
-<p align="right">
+
+<p>
   <img
-    src="https://masiarek.pl/assets/img/tagger_v1/tagger-author_sign.png"
-    alt="by Rafał Masiarek"
-    width="280"
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-docs-8020f2ee40f61e79343e39b5c74741b5-1983.webp 1983w"
+    alt="Terraform Reference"
+    width="400"
   />
 </p>
-
-
-## Terraform Reference
 
 
 
@@ -284,7 +283,13 @@ output "tags_api" {
 }
 ```
 
-## License
+<img
+  src="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp"
+  srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-2000.webp 2000w"
+  width="400"
+  alt="License"
+/>
+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -305,7 +310,13 @@ Source: https://opensource.org/licenses/MIT
 
 
 See [LICENSE](LICENSE) for full details.
-## Authors
+<img
+  src="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp"
+  srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-2000.webp 2000w"
+  width="400"
+  alt="Authors"
+/>
+
 
 - Rafał Masiarek | [website](https://masiarek.pl) | [email](mailto:rafal@masiarek.pl) | [github](https://github.com/rafalmasiarek)
 
@@ -313,3 +324,14 @@ See [LICENSE](LICENSE) for full details.
 <!-- references -->
 
 [repo_link]: https://github.com/rafalmasiarek/terraform-null-tagger
+
+<p align="right">
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-author-sign-0d994b53a6ca9c892fbc63c7e9e112f0-2000.webp 2000w"
+    alt="by Rafał Masiarek"
+    width="280"
+  />
+</p>
+
+
