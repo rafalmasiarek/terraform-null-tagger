@@ -1,10 +1,9 @@
 name: terraform-null-tagger
 repo_url: https://github.com/rafalmasiarek/terraform-null-tagger
 license: MIT
-logo: https://masiarek.pl/assets/img/tagger_v1/tagger-1200-q82.webp
+logo: https://masiarek.pl/assets/img/tagger_static/tagger-c431ed2461f542585c65a57e0c03ba12-1200.webp
 
 context:
-  - "## About"
   - |
     **Standardized naming and tagging for Terraform resources.**
 
@@ -21,3 +20,22 @@ authors:
     email: rafal@masiarek.pl
     github: rafalmasiarek
     website: https://masiarek.pl
+
+license_heading: |
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-license-5e8a6f433e1d68e761f8f6dbb3dc4dcf-2000.webp 2000w"
+    width="400"
+    alt="License"
+  />
+
+authors_heading: |
+  <img
+    src="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp"
+    srcset="https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-400.webp 400w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-800.webp 800w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-1200.webp 1200w, https://masiarek.pl/assets/img/tagger_static/tagger-h-authors-3c1fe623e8489e8e4d6f644e5ddc129c-2000.webp 2000w"
+    width="400"
+    alt="Authors"
+  />
+
+footer_includes:
+  - docs/signature.md
