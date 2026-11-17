@@ -129,3 +129,83 @@ appear as additions — this is expected, not drift:
 
 After that apply the state is stable and no further diffs appear. In CI/CD a second
 `terraform apply` (idempotent) picks them up automatically.
+
+### Full example
+
+```hcl
+# One "base" call defines everything shared across the whole stack.
+module "tagger" {
+  source = "../../"
+
+  namespace     = "acme"
+  environment   = "prod"
+  tag_prefix    = "acme:"
+  owner         = "sre-team"
+  owner_contact = "@sre-team"
+
+  # In a real caller these two come from data.tagger_origin.self.{source,version}
+  # (terraform-provider-tagger), not hardcoded.
+  origin_source  = "github.com/rafalmasiarek/terraform-aws-vpc"
+  origin_version = "v0.3.1"
+}
+
+# Every per-resource call only needs context + name - nothing else repeated.
+module "tagger_sre_reports" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "sre-reports"
+
+  service = {
+    database = {
+      engine         = "postgres"
+      engine_version = "15.4"
+      multi_az       = true
+    }
+  }
+}
+
+module "tagger_other_thing" {
+  source  = "../../"
+  context = module.tagger.context
+  name    = "other-thing"
+}
+
+# Container-platform convention: shared context + per-resource call.
+module "tagger_api" {
+  source      = "../../"
+  context     = module.tagger.context
+  name        = "api"
+  application = "billing"
+  service = {
+    container = {
+      cluster     = "prod-eks"
+      task_family = "api"
+      node_group  = "ng-general"
+    }
+  }
+  extra_tags = {
+    tier = "frontend"
+    note = "" # dropped - null/empty values never reach the tags output
+  }
+}
+
+output "name_prefix" {
+  value = module.tagger_sre_reports.name_prefix
+}
+
+output "computed_name" {
+  value = module.tagger_sre_reports.computed_name
+}
+
+output "tags_sre_reports" {
+  value = module.tagger_sre_reports.tags
+}
+
+output "tags_other_thing" {
+  value = module.tagger_other_thing.tags
+}
+
+output "tags_api" {
+  value = module.tagger_api.tags
+}
+```
